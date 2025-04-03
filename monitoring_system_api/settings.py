@@ -37,6 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'opo',
+    'devices',
+    'rest_framework',
+    'drf_spectacular',
+    'legacy',
 ]
 
 MIDDLEWARE = [
@@ -75,9 +80,52 @@ WSGI_APPLICATION = 'monitoring_system_api.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'monitoring_db_test',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+    },
+    'mssql': {
+        'ENGINE': 'mssql',
+        'NAME': 'Test_OPO2',
+        'HOST': 'DESKTOP-EV7G9SI',
+        'PORT': '',
+        'OPTIONS': {
+            'driver': 'ODBC Driver 17 for SQL Server',
+            'trusted_connection': 'yes',  # ВАЖНО: для Windows auth
+        },
     }
+}
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',  # Ensure JSON rendering is available
+        'rest_framework.renderers.BrowsableAPIRenderer',  # Browsable API
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API для опасных объектов',
+    'DESCRIPTION': 'API для работы с опасными производственными объектами',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'TAGS_SORTER': 'alpha',  # или кастомная функция
+    # 'TAGS': [
+    #     {
+    #         'name': 'ОПО',
+    #         'description': 'Опасные производственные объекты',
+    #     },
+    #     {
+    #         'name': 'Типы ОПО',
+    #         'description': 'Типы опасных производственных объектов',
+    #     },
+    #     {
+    #         'name': 'Классы опасности',
+    #         'description': 'Классификация опасности объектов',
+    #     },
+    # ],
 }
 
 
