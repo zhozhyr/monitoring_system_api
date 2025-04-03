@@ -1,7 +1,7 @@
 from rest_framework_nested import routers
 from django.urls import path
 from .views import TUViewSet, ControlNoteViewSet, CertificateViewSet
-from .views import DirectoryView
+from .views import DirectoryView, DirectoryDetailView
 
 router = routers.SimpleRouter()
 router.register(r'tu', TUViewSet)
@@ -12,7 +12,7 @@ tu_router.register(r'notes', ControlNoteViewSet, basename='tu-notes')
 
 
 urlpatterns = [
-    path('tu/directory/<str:directory_type>/<int:pk>/', DirectoryView.as_view(), name='directory-detail'),
+    path('tu/directory/<str:directory_type>/<int:pk>/', DirectoryDetailView.as_view(), name='directory-detail'),
     path('tu/directory/<str:directory_type>/', DirectoryView.as_view(), name='directory-list'),
 
 ]

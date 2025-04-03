@@ -57,6 +57,41 @@ class DirectoryView(APIView):
         serializer = serializer_class(queryset, many=True)
         return Response(serializer.data)
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name='directory_type',
+            description='Тип справочника',
+            required=True,
+            type=str,
+            enum=list(DIRECTORY_MODELS.keys()),
+            location=OpenApiParameter.PATH
+        ),
+    ],
+    responses=NameTUSerializer
+)
+@schema_view("Справочники ТУ")
+class DirectoryDetailView(APIView):
+    def get(self, request, directory_type, pk):
+        Model = DIRECTORY_MODELS.get(directory_type)
+        if not Model:
+            raise NotFound("Неизвестный справочник")
+
+        obj = get_object_or_404(Model, pk=pk)
+
+        serializer_class = {
+            'manufacturer': ManufacturerSerializer,
+            'name_tu': NameTUSerializer,
+            'kind_tu': KindTUSerializer,
+            'type_tu': TypeTUSerializer
+        }.get(directory_type)
+
+        if serializer_class is None:
+            raise NotFound("Сериализатор не найден")
+
+        serializer = serializer_class(obj)
+        return Response(serializer.data)
+
 
 @schema_view('Тех.устройства')
 class TUViewSet(viewsets.ModelViewSet):
